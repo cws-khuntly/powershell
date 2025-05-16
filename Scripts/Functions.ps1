@@ -94,3 +94,20 @@ Function Write-Commit-Message() {
         Remove-Variable -Name CommitMessage
     }
 }
+
+Function admin {
+    param (
+        [string] $ArgumentList
+    )
+
+    if ([string]::IsNullOrEmpty($ArgumentList})) {
+        Start-Process wt -Verb runAs
+    } else {
+        Start-Process wt -Verb runAs -ArgumentList "pwsh.exe -NoExit -Command $(${ArgumentList} -join ' ')
+}
+
+Function flushdns {
+        Clear-DnsClientCache
+
+        Write-Host "DNS has been flushed"
+}
