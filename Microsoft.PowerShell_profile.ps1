@@ -35,6 +35,12 @@ if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -P
         $ModuleFiles = Get-ChildItem -Path "${ChocolateyModulesPath}" -File
 
         ForEach ($ModuleFile in ${ModuleFiles}) {
+            if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
+                Write-Verbose "Module ${ModuleFile} found, skipping install."
+
+                Continue
+            }
+
             Import-Module -Name "${ModuleFile}" -Verbose
         }
     }
@@ -43,8 +49,29 @@ if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -P
         $ModuleFiles = Get-ChildItem -Path "${OpenSSLModulesPath}" -File
 
         ForEach ($ModuleFile in ${ModuleFiles}) {
-            Import-Module -Name "${ModuleFile}" -Verbose
-        }
+if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
+                Write-Verbose "Module ${ModuleFile} found, skipping install."
+
+                Continue
+            }
+
+            try {
+                Write-Verbose "Attemping to install module ${ModuleFile}"
+
+                Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false
+           }
+           catch {
+               $ModuleLookup = Find-Module -Name ${ModuleName}
+
+               if (-not "${ModuleLookup}") {
+                   Write-Error "Module `"$Module`" not found."
+
+                   continue
+               }
+
+               Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber
+               Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false
+            }
     }
 }
 Write-Debug "End load custom profile"
