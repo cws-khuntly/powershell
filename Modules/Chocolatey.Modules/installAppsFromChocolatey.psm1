@@ -20,20 +20,23 @@
 
 function installAppsFromChocolatey {
     if (Test-Path -Path "C:/ProgramData/chocolatey/choco.exe" -PathType Leaf) {
-        $ProcessParams = @{
-            FilePath = "C:/ProgramData/chocolatey/choco.exe"
-            ArgumentList = "install $([Environment]::GetFolderPath("Personal"))/Documents/Chocolatey/packages.config --virus -y"
+        if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/Documents/Chocolatey/packages.config" -Type Leaf) {
+                $ProcessParams = @{
+                     FilePath = "C:/ProgramData/chocolatey/choco.exe"
+                     ArgumentList = "install $([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/Documents/Chocolatey/packages.config --virus -y"
+                }
+
+                Start-Process ${ProcessParams} -Wait
+                $ExitCode = ${LastExitCode}
+
+                Remove-Variable -Name ProcessParams
+
+                return ${ExitCode}
+            } else {
+                Write-Error -Message "Package configuration file was not found. Unable to perform package installation." -Category ObjectNotFound
+        } else {
+            Write-Error -Message "Chocolatey is not installed, cannot install packages" -Category NotInstalled
         }
-
-        Start-Process ${ProcessParams} -Wait
-        $ExitCode = ${LastExitCode}
-
-        Remove-Variable -Name ProcessParams
-
-        return ${ExitCode}
-    }
-    else {
-        Write-Error -Message "Chocolatey is not installed, cannot install packages" -Category NotInstalled
     }
 }
 
