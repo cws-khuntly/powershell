@@ -18,16 +18,23 @@
 #==============================================================================
 #>
 
-function installAppsFromChocolatey
-{
-    $ProcessParams = @{
-        FilePath = "C:/ProgramData/chocolatey/choco.exe"
-        ArgumentList = "install $env:UserProfile/Documents/Chocolatey/packages.config --virus -y"
+function installAppsFromChocolatey {
+    if (Test-Path -Path "C:/ProgramData/chocolatey/choco.exe" -PathType Leaf) {
+        $ProcessParams = @{
+            FilePath = "C:/ProgramData/chocolatey/choco.exe"
+            ArgumentList = "install $([Environment]::GetFolderPath("Personal"))/Documents/Chocolatey/packages.config --virus -y"
+        }
 
-    Start-Process $ProcessParams -Wait
-    $ExitCode = $LastExitCode
+        Start-Process ${ProcessParams} -Wait
+        $ExitCode = ${LastExitCode}
 
-    return $ExitCode
+        Remove-Variable -Name ProcessParams
+
+        return ${ExitCode}
+    }
+    else {
+        Write-Error -Message "Chocolatey is not installed, cannot install packages" -Category NotInstalled
+    }
 }
 
 Export-ModuleMember -Function installAppsFromChocolatey
