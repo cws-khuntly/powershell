@@ -28,20 +28,33 @@ if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -P
         }
     }
 
-    $ChocolateyModulesPath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/Modules/Chocolatey.Modules"
-    $OpenSSLModulesPath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/Modules/OpenSSL.Modules"
-
     if (Test-Path -Path "${ChocolateyModulesPath}" -PathType Container) {
         $ModuleFiles = Get-ChildItem -Path "${ChocolateyModulesPath}" -File
 
         ForEach ($ModuleFile in ${ModuleFiles}) {
-            if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
+if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
                 Write-Verbose "Module ${ModuleFile} found, skipping install."
 
                 Continue
             }
 
-            Import-Module -Name "${ModuleFile}" -Verbose
+            try {
+                Write-Verbose "Attemping to install module ${ModuleFile}"
+
+                Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false
+           }
+           catch {
+               $ModuleLookup = Find-Module -Name ${ModuleName}
+
+               if (-not "${ModuleLookup}") {
+                   Write-Error "Module `"$Module`" not found."
+
+                   continue
+               }
+
+               Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber
+               Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false
+            }
         }
     }
 
@@ -72,6 +85,7 @@ if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
                Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber
                Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false
             }
+        }
     }
 }
 Write-Debug "End load custom profile"
