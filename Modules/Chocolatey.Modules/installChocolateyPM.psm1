@@ -19,15 +19,24 @@
 #>
 
 Function installChocolateyPM {
-    Get-PSDrive -PSProvider 'FileSystem' | Select-Object Name
-    New-Item -ItemType Directory -Path "$(Get-PSDrive -PSProvider 'FileSystem' | Select-Object Name"
-        New-Item -ItemType file -Path "C:\path\to\your\file.txt"
-        Set-Content -Path "C:\path\to\your\file.txt" -Value "This is the content to write to the file."
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;
+    $InstallFile = New-TemporaryFile
+
+    if ((Test-Path -Path "${InstallFile}" -PathType Leaf) -and ($(Get-Acl "${InstallFile}").Access -Match "Execute")) {
+        $FileContent = New-Object System.Text.StringBuilder
+        ${FileContent}.AppendLine("[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;")
+        ${FileContent}.AppendLine()
+        ${FileContent}.AppendLine("Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))")
+        ${FileContent}.AppendLine()
+        ${FileContent}.AppendLine("$ExitCode = ${LastExitCode}")
+        ${FileContent}.AppendLine()
+        ${FileContent}.AppendLine("return ${Exit code}")
+        ${FileContent}.AppendLine()
+
+C:\Windows\System32\WindowsPowerShell\v1.0\
 
 
         Start-Process wt -Verb runAs -ArgumentList "pwsh.exe -NoExit -Command $(${ArgumentList} -join ' ')
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    
     $ExitCode = ${LastExitCode}
 
     return ${ExitCode}
