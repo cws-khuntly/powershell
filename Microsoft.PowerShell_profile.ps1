@@ -18,23 +18,33 @@ if (Test-Path($ChocolateyProfile)) {
 Import-Module -Name Microsoft.WinGet.CommandNotFound
 #f45873b3-b655-43a6-b217-97c00aa0db58
 
-if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/)" -PathType Container) {
-    if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts)" -PathType Container) {
-        $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts)" -File
+Write-Debug "Start load custom profile"
+if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
+    if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts" -PathType Container) {
+        $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts" -File
 
         ForEach ($SourceFile in ${SourceFiles}) {
-            . ${SourceFiles}
+            . ${SourceFile}
         }
     }
 
     $ChocolateyModulesPath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/Modules/Chocolatey.Modules"
-    $OpenSSLModulesPath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/Modules/Chocolatey.Modules"
+    $OpenSSLModulesPath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/Modules/OpenSSL.Modules"
 
     if (Test-Path -Path "${ChocolateyModulesPath}" -PathType Container) {
-        Import-Module -Name "${ChocolateyModulesPath}" -Verbose
+        $ModuleFiles = Get-ChildItem -Path "${ChocolateyModulesPath}" -File
+
+        ForEach ($ModuleFile in ${ModuleFiles}) {
+            Import-Module -Name "${ModuleFile}" -Verbose
+        }
     }
 
     if (Test-Path -Path "${OpenSSLModulesPath}" -PathType Container) {
-        Import-Module -Name "${OpenSSLModulesPath}" -Verbose
+        $ModuleFiles = Get-ChildItem -Path "${OpenSSLModulesPath}" -File
+
+        ForEach ($ModuleFile in ${ModuleFiles}) {
+            Import-Module -Name "${ModuleFile}" -Verbose
+        }
     }
 }
+Write-Debug "End load custom profile"
