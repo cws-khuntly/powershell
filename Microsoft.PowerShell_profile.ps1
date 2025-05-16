@@ -1,6 +1,8 @@
 #
 # add path
 #
+${env:Path} += ";${env:ProgramFiles}/git/bin"
+
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 
 # https://technet.microsoft.com/en-us/magazine/hh241048.aspx
