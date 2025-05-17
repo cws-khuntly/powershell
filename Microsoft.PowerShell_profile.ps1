@@ -13,7 +13,7 @@ $MaximumHistoryCount = 10000;
 #
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
-	Import-Module "$ChocolateyProfile"
+    Import-Module "$ChocolateyProfile"
 }
 
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
@@ -21,14 +21,17 @@ Import-Module -Name Microsoft.WinGet.CommandNotFound
 #f45873b3-b655-43a6-b217-97c00aa0db58
 
 Write-Debug "Start load custom profile"
-if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
-    if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts" -PathType Container) {
-        $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/Scripts" -File
+
+if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolser.Personal))/PowerShell/" -PathType Container) {
+    if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Scripts" -PathType Container) {
+        $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Scripts" -File
 
         ForEach ($SourceFile in ${SourceFiles}) {
             . ${SourceFile}
         }
     }
+
+    $ChocolateyModulesPath = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Modules/Chocolatey.Modules"
 
     if (Test-Path -Path "${ChocolateyModulesPath}" -PathType Container) {
         $ModuleFiles = Get-ChildItem -Path "${ChocolateyModulesPath}" -File
@@ -60,6 +63,9 @@ if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
         }
     }
 
+
+    $OpenSSLModulesPath = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Modules/OpenSSL.Modules"
+
     if (Test-Path -Path "${OpenSSLModulesPath}" -PathType Container) {
         $ModuleFiles = Get-ChildItem -Path "${OpenSSLModulesPath}" -File
 
@@ -90,4 +96,5 @@ if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
         }
     }
 }
+
 Write-Debug "End load custom profile"
