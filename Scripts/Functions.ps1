@@ -77,6 +77,7 @@ Function prompt() {
 
 Function Get-PID-For-Port() {
     param (
+        [Parameter(Mandatory=$true)]
         [int] $TargetPort
     )
 
