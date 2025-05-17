@@ -1,3 +1,16 @@
+$LoggingProperties = "path/to/your/file.properties"
+$properties = @{}
+
+Get-Content $filePath | ForEach-Object {
+    if ($_ -match "=") {
+        $key, $value = $_ -split "=", 2
+        $properties[$key.Trim()] = $value.Trim()
+    }
+}
+
+# Access properties like:
+$properties["propertyName"]
+
 function Write-Log {
     param(
         [string]$Message,
