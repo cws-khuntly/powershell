@@ -28,7 +28,9 @@ function Write-Log {
         [string]$Message,
         [string]$LogPath = "C:\Logs\applog.txt"
     )
-    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+
+    $Timestamp = Get-Date -Format "${TIMESTAMP_OPTS}"
+    [string]::Format("${CONVERSION_PATTERN}",$name)
     $LogEntry = "$Timestamp - $Message"
     Add-Content -Path $LogPath -Value $LogEntry
 }
