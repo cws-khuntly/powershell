@@ -1,3 +1,7 @@
+$LoggingPropertyFile = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/Documents/PowerShell/Configuration/logging.properties"
+
+if (Test-Path -Path "${LoggingPropertyFile}" -Type Leaf) {
+    $LoggingProperties = Read-Properties "${LoggingPropertyFile}"
 
 # Access properties like:
 $properties["propertyName"]
