@@ -1,4 +1,5 @@
  - name: Run PSScriptAnalyzer
+   on: [push, pull_request]
    uses: microsoft/psscriptanalyzer-action@v1.0
    with:
     path: .\
