@@ -1,6 +1,6 @@
 Function returnRandomCharacters() {
     param (
-        [int] $StringLength = 10,
+        [int] $StringLength = 20,
         [string] $StringType = "Alphanumeric"
     )
 
