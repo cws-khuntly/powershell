@@ -3,6 +3,9 @@ $LoggingPropertyFile = "$([Environment]::GetFolderPath(Environment.SpecialFolder
 if (Test-Path -Path "${LoggingPropertyFile}" -Type Leaf) {
     $LoggingProperties = Read-Properties "${LoggingPropertyFile}"
 
+    if ([string]::IsNullOrEmpty($LoggingProperties)) {
+        $LogDirectory = ${LoggingProperties}["
+
 # Access properties like:
 $properties["propertyName"]
 
