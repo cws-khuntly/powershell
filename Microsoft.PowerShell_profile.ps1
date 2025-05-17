@@ -24,38 +24,82 @@ Write-Debug "Start load custom profile"
 
 if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolser.Personal))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Scripts" -PathType Container) {
+        $Logger = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Scripts/logging.ps1"
+        if (Test-Path -Path "${Logger}" -PathType Leaf) {
+            . "${Logger}"
+
         $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Scripts" -File
 
+        if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+            writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "SourceFiles -> ${SourceFiles}";
+}
+
         ForEach ($SourceFile in ${SourceFiles}) {
+            if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+                writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "SourceFile -> ${SourceFile}";
+}
+            if ("${SourceFile}" -Match "logger.ps1") {
+                Continue
+            }
+
+            if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+                writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: . ${SourceFile}";
+}
+
             . ${SourceFile}
         }
     }
 
     $ChocolateyModulesPath = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Modules/Chocolatey.Modules"
 
+    if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "ChocolateyModulesPath -> ${ChocolateyModulesPath}";
+}
+
     if (Test-Path -Path "${ChocolateyModulesPath}" -PathType Container) {
         $ModuleFiles = Get-ChildItem -Path "${ChocolateyModulesPath}" -File
 
+        if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "ModuleFiles -> ${ModuleFiles}";
+}
+
         ForEach ($ModuleFile in ${ModuleFiles}) {
-if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
-                Write-Verbose "Module ${ModuleFile} found, skipping install."
+            if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
+                if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) {
+                    writeLogEntry "FILE" "INFO" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Module ${ModuleFile} found in environment, not loading";
+                }
 
                 Continue
             }
 
             try {
-                Write-Verbose "Attemping to install module ${ModuleFile}"
+                if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Loading module ${ModuleFile}";
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false";
+}
 
                 Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false
            }
            catch {
                $ModuleLookup = Find-Module -Name ${ModuleName}
 
-               if (-not "${ModuleLookup}") {
-                   Write-Error "Module `"$Module`" not found."
+               if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "ModuleLookup -> ${ModuleLookup}";
+}
 
-                   continue
+               if ([string]::IsNullOrEmpty("${ModuleLookup}")) {
+                   if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) {
+        writeLogEntry "FILE" "ERROR" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Module ${ModuleFile} failed to load.";
+         writeLogEntry "CONSOLE" "STDERR" "Module ${ModuleFile} failed to load.";
+}
+
+                   Continue
                }
+
+               if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+                   writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber";
+                   writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false";
+}
 
                Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber
                Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false
@@ -63,32 +107,56 @@ if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
         }
     }
 
-
     $OpenSSLModulesPath = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Modules/OpenSSL.Modules"
+
+    if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "OpenSSLModulesPath -> ${OpenSSLModulesPath}";
+}
 
     if (Test-Path -Path "${OpenSSLModulesPath}" -PathType Container) {
         $ModuleFiles = Get-ChildItem -Path "${OpenSSLModulesPath}" -File
 
+        if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "ModuleFiles -> ${ModuleFiles}";
+}
+
         ForEach ($ModuleFile in ${ModuleFiles}) {
-if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
-                Write-Verbose "Module ${ModuleFile} found, skipping install."
+            if (Get-Module -ListAvailable -Name ${ModuleFile} -Verbose:$false) {
+                if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) {
+                    writeLogEntry "FILE" "INFO" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Module ${ModuleFile} found in environment, not loading";
+                }
 
                 Continue
             }
 
             try {
-                Write-Verbose "Attemping to install module ${ModuleFile}"
+                if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Loading module ${ModuleFile}";
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false";
+}
 
                 Import-Module -Name ${ModuleFile} -ErrorAction Stop -Verbose:$false
            }
            catch {
                $ModuleLookup = Find-Module -Name ${ModuleName}
 
-               if (-not "${ModuleLookup}") {
-                   Write-Error "Module `"$Module`" not found."
+               if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+        writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "ModuleLookup -> ${ModuleLookup}";
+}
 
-                   continue
+               if ([string]::IsNullOrEmpty("${ModuleLookup}")) {
+                   if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) {
+        writeLogEntry "FILE" "ERROR" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "Module ${ModuleFile} failed to load.";
+         writeLogEntry "CONSOLE" "STDERR" "Module ${ModuleFile} failed to load.";
+}
+
+                   Continue
                }
+
+               if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}")) -and  ("${isDebugEnabled}" -Match "true")) {
+                   writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber";
+                   writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "EXEC: Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false";
+}
 
                Install-Module -Name ${ModuleName} -Scope AllUsers -Force -AllowClobber
                Import-Module -Name ${ModuleName} -Scope Global -Verbose:$false
