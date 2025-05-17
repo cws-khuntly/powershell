@@ -42,6 +42,8 @@ Function installChocolateyPM {
         Write-Error -Message "Unable to create temporary file"
     }
 
+    Remove-Item -Path "${InstallFile}" -Force
+
     return ${ExitCode}
 }
 
