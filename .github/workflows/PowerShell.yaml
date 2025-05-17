@@ -1,0 +1,24 @@
+name: PowerShell Scan
+on: [push, pull_request]
+
+jobs:
+  scan:
+    name: PowerShell Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: false
+      - name: PowerShell Analyzer
+        uses: microsoft/psscriptanalyzer-action@v1.0
+        with:
+          path: ./
+          includeDefaultRules: true
+          severity: '"Error", "Warning"'
+          recurse: true
+          enableExit: true
+        if: ${{ success() }}
