@@ -2,7 +2,7 @@ name: PowerShell Scan
 on: [push, pull_request]
 
 jobs:
-  scan:
+  PSScriptAnalyzer:
     name: PowerShell Analysis
     runs-on: ubuntu-latest
     permissions:
