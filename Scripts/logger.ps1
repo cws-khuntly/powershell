@@ -9,7 +9,7 @@ if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Pe
             }
         }
     } else {
-        Write-Error -Message "Unable
+        Write-Error -Message "Unable to load logger. No logging enabled!" -Category 
 
 # Access properties like:
 $properties["propertyName"]
