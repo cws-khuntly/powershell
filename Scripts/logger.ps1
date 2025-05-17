@@ -24,6 +24,11 @@ if (Test-Path -Path "${LoggingPropertyFile}" -Type Leaf) {
 if (!(Test-Path -Path "${LOG_ROOT}" -PathType Container)) { New-Item -ItemType Directory -Path "${LOG_ROOT}" }
 
 function Write-Log {
+    param (
+        [Parameter(Mandatory=$true)]
+        [int] $StringLength = 20,
+        [string] $StringType = "Alphanumeric"
+    )
     param(
         [string]$Message,
         [string]$LogPath = "C:\Logs\applog.txt"
