@@ -1,9 +1,6 @@
 name: Run PSPSScriptAnalyzer on PowerShell Scripts
 on: [push, pull_request]
 
-on:
-  pull_request:
-
 jobs:
   PSScriptAnalyzer:
     runs-on: ubuntu-latest
