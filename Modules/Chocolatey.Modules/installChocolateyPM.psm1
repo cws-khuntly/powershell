@@ -32,12 +32,15 @@ Function installChocolateyPM {
         ${FileContent}.AppendLine("return ${Exit code}")
         ${FileContent}.AppendLine()
 
-C:\Windows\System32\WindowsPowerShell\v1.0\
+        Set-Content -Path "${InstallFile}" -Value "${FileContent}.ToString()"
 
+        Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass', '-File', '${InstallFile}'
+        $ExitCode = ${LastExitCode}
+    } else {
+        $ExitCode = 1
 
-        Start-Process wt -Verb runAs -ArgumentList "pwsh.exe -NoExit -Command $(${ArgumentList} -join ' ')
-    
-    $ExitCode = ${LastExitCode}
+        Write-Error -Message "Unable to create temporary file"
+    }
 
     return ${ExitCode}
 }
