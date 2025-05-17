@@ -124,7 +124,7 @@ Function Return-Properties() {
     $ReturnedProperties = @{}
 
     if ((Test-Path -Path "${InputFile}" -PathType Leaf) -and ((Get-Acl -Path "${InputFile").Access -Match "Read")) {
-        Get-Content ${InputFile}" | ForEach-Object {
+        Get-Content "${InputFile}" | ForEach-Object {
             if ($_ -Match "=") {
                 $key, $value = $_ -split "=", 2
                 ${ReturnedProperties}[$key.Trim()] = $value.Trim()
