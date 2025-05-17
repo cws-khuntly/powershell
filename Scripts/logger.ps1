@@ -26,16 +26,25 @@ if (!(Test-Path -Path "${LOG_ROOT}" -PathType Container)) { New-Item -ItemType D
 function Write-Log {
     param (
         [Parameter(Mandatory=$true)]
-        [int] $StringLength = 20,
-        [string] $StringType = "Alphanumeric"
-    )
-    param(
-        [string]$Message,
-        [string]$LogPath = "C:\Logs\applog.txt"
+        [string] $LogType,
+        [Parameter(Mandatory=$true)]
+        [string] $LogLevel,
+        [int] $ProcessID,
+        [string] $ClassName,
+        [int] $LineNumber,
+        [string] $FunctionName,
+        [string] $LogMessage
     )
 
+    Switch -Regex (${LogType}) {
+        "[Cc][Oo][Nn][SS][Oo][Ll][Ee]" { do things }
+        "[Ff][Ii][Ll][Ee]" { dothings }
+        default { }
+    }
     $Timestamp = Get-Date -Format "${TIMESTAMP_OPTS}"
     [string]::Format("${CONVERSION_PATTERN}",$name)
     $LogEntry = "$Timestamp - $Message"
     Add-Content -Path $LogPath -Value $LogEntry
 }
+
+Function Write-Log
