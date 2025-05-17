@@ -21,7 +21,7 @@
 Function installChocolateyPM {
     $InstallFile = New-TemporaryFile
 
-    if ((Test-Path -Path "${InstallFile}" -PathType Leaf) -and ($(Get-Acl "${InstallFile}").Access -Match "Execute")) {
+    if ((Test-Path -Path "${InstallFile}" -PathType Leaf) -and ($(Get-Acl "${InstallFile}").Access -Match "Write")) {
         $FileContent = New-Object System.Text.StringBuilder
         ${FileContent}.AppendLine("[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072;")
         ${FileContent}.AppendLine()
