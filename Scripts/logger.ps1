@@ -1,12 +1,15 @@
-$LoggingProperties = "path/to/your/file.properties"
-$properties = @{}
+if (Test-Path -Path "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Configuration" -PathType Container) {
+    $LoggingProperties = $([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/Configuration/logging.properties"
 
-Get-Content $filePath | ForEach-Object {
-    if ($_ -match "=") {
-        $key, $value = $_ -split "=", 2
-        $properties[$key.Trim()] = $value.Trim()
-    }
-}
+    if (Test-Path -Path "${LoggingProperties}" -PathType Leaf) {
+        Get-Content ${LoggingProperties}" | ForEach-Object {
+            if ($_ -match "=") {
+                $key, $value = $_ -split "=", 2
+                $properties[$key.Trim()] = $value.Trim()
+            }
+        }
+    } else {
+        Write-Error -Message "Unable
 
 # Access properties like:
 $properties["propertyName"]
