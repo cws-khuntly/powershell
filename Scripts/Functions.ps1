@@ -97,13 +97,16 @@ Function Write-Commit-Message() {
 
 Function admin {
     param (
+        [Parameter(Mandatory=$true)]
+        [string] $CommandToRun,
         [string] $ArgumentList
     )
 
-    if ([string]::IsNullOrEmpty($ArgumentList})) {
-        Start-Process wt -Verb runAs
+    if ([string]::IsNullOrEmpty(${ArgumentList})) {
+        Start-Process "${CommandToRun}" -Verb RunAs
     } else {
-        Start-Process wt -Verb runAs -ArgumentList "pwsh.exe -NoExit -Command $(${ArgumentList} -join ' ')
+        Start-Process "${CommandToRun}" -Verb RunAs -ArgumentList "${ArgumentList}"
+    }
 }
 
 Function flushdns {
