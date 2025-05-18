@@ -22,6 +22,7 @@ Import-Module -Name SysInternals
 #
 Install-Module -Name VMware.PowerCLI
 Import-Module -Name VMware.PowerCLI
+
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
         $LoadPropertyHandler = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/LoadPropertyFile.ps1"
