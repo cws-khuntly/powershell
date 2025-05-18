@@ -4,7 +4,7 @@ $PSReadLineOptions = @{
     EditMode = 'Windows'
     HistoryNoDuplicates = $true
     HistorySearchCursorMovesToEnd = $true
-    HistorySavePath = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/PowerShell/.ps_history"
+    HistorySavePath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/.ps_history"
     HistorySaveStyle = 'SaveIncrementally'
     Colors = @{
         Command = '#87CEEB'  # SkyBlue (pastel)
@@ -48,7 +48,7 @@ $scriptblock = {
     $customCompletions = @{
         'git' = @('status', 'add', 'commit', 'push', 'pull', 'clone', 'checkout')
     }
-    
+
     $command = $commandAst.CommandElements[0].Value
     if ($customCompletions.ContainsKey($command)) {
         $customCompletions[$command] | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {

@@ -17,15 +17,23 @@ Import-Module -Name Microsoft.WinGet.CommandNotFound
 
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
-        $Logger = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/logging.ps1"
+        $LoadPropertyHandler = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/LoadPropertyFile.ps1"
+
+        if (Test-Path -Path "${LoadPropertyHandler}" -PathType Leaf) {
+            . "${LoadPropertyHandler}"
+        }
+    }
+
+    if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
+        $Logger = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/logger.ps1"
 
         if (Test-Path -Path "${Logger}" -PathType Leaf) {
             . "${Logger}"
         }
     }
 
-    $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/system" -File
-    $SourceFiles += Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/profile" -File
+    $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system" -File
+    $SourceFiles += Get-ChildItem -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/profile" -File
 
     if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}"))) -and ("${isDebugEnabled}" -Match "true")) {
         writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path ${MyInvocation.PSCommandPath} -Leaf)" "${MyInvocation.ScriptLineNumber}" "ProfileLoad" "SourceFiles -> ${SourceFiles}";
