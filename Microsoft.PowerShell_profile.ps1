@@ -23,6 +23,26 @@ Import-Module -Name SysInternals
 Install-Module -Name VMware.PowerCLI
 Import-Module -Name VMware.PowerCLI
 
+#
+# OpenSSL
+#
+Install-Module -Name OpenSSL
+Import-Module -Name OpenSSL
+
+#
+# windows update
+#
+Install-Module -Name PSWindowsUpdate
+Import-Module -Name PSWindowsUpdate
+
+#
+# winget
+#
+Install-Module -Name Microsoft.WinGet.Client
+Install-Module -Name Microsoft.WinGet.CommandNotFound
+Import-Module -Name Microsoft.WinGet.Client
+Import-Module -Name Microsoft.WinGet.CommandNotFound
+
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
         $LoadPropertyHandler = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/LoadPropertyFile.ps1"
