@@ -11,9 +11,11 @@ if (Test-Path($ChocolateyProfile)) {
     Import-Module "$ChocolateyProfile"
 }
 
-#f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
-Import-Module -Name Microsoft.WinGet.CommandNotFound
-#f45873b3-b655-43a6-b217-97c00aa0db58
+#
+# sysinternals module
+#
+Install-Module -Name SysInternals
+Import-Module -Name SysInternals
 
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
