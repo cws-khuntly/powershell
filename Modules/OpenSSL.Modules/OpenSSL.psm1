@@ -1,4 +1,4 @@
-Add-PathVariable "$env:ProgramFiles\OpenSSL"
+${env:Path} += ";$([Environment]::GetFolderPath(Environment.SpecialFolder.ProgramFiles))/OpenSSL"
 
 # See https://stackoverflow.com/questions/14459078/unable-to-load-config-info-from-usr-local-ssl-openssl-cnf
 # $env:OPENSSL_CONF = "$env:ProgramFiles\OpenSSL\openssl.cnf"

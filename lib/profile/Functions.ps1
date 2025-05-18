@@ -116,21 +116,14 @@ Function flushdns {
     Write-Output -Message "DNS has been flushed"
 }
 
-Function Return-Properties() {
+Function Get-Properties() {
     param (
         [Parameter(Mandatory=$true)]
         [string] $InputFile
     )
 
-    $ReturnedProperties = @{}
-
-    if ((Test-Path -Path "${InputFile}" -PathType Leaf) -and ((Get-Acl -Path "${InputFile").Access -Match "Read")) {
-        Get-Content "${InputFile}" | ForEach-Object {
-            if ($_ -Match "=") {
-                $key, $value = $_ -split "=", 2
-                ${ReturnedProperties}[$key.Trim()] = $value.Trim()
-            }
-        }
+    if ((Test-Path -Path "${InputFile}" -PathType Leaf) -and ((Get-Acl -Path "${InputFile}").Access -Match "Read")) {
+        $ReturnedProperties = Get-Content -Path "${InputFile}" | Where-Object { $_ -Match "=" } | ConvertFrom-StringData
     } else {
         Write-Error -Message "File ${InputFile} was not found or could not be read." -Category ObjectNotFound
     }

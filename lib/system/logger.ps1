@@ -1,10 +1,10 @@
-$LoggingPropertyFile = "$([Environment]::GetFolderPath(Environment.SpecialFolder.Personal))/Documents/PowerShell/Configuration/logging.properties"
+$LoggingPropertyFile = "$([Environment]::GetFolderPath("Personal"))/Documents/PowerShell/config/system/logging.properties"
 
 if (Test-Path -Path "${LoggingPropertyFile}" -Type Leaf) {
-    $LoggingProperties = Read-Properties "${LoggingPropertyFile}"
+    $LoggingProperties = Get-Properties "${LoggingPropertyFile}"
 
     if ([string]::IsNullOrEmpty("${LoggingProperties}")) {
-        $LogRoot = "${LoggingProperties}["LOG_ROOT"]"
+        $LogRoot = "${LoggingProperties}"."LOG_ROOT"
 
         if (!(Test-Path -Path "${LOG_ROOT}" -PathType Container)) { New-Item -ItemType Directory -Path "${LOG_ROOT}" }
 
@@ -19,10 +19,10 @@ if (Test-Path -Path "${LoggingPropertyFile}" -Type Leaf) {
 Function setLoggingSession() {
     Set-Variable -Name "LoggingLoaded" -Value $true -Scope Global
 
-    Set-Variable -Name "IsDebugEnabled" -Value "${LoggingProperties}["ENABLE_DEBUG"]" -Scope Session
-    Set-Variable -Name "IsVerboseEnabled" -Value "${LoggingProperties}["ENABLE_VERBOSE"]" -Scope Session
-    Set-Variable -Name "IsTraceEnabled" -Value "${LoggingProperties}["ENABLE_TRACE"]" -Scope Session
-    Set-Variable -Name "IsPerfEnabled" -Value "${LoggingProperties}["ENABLE_PERFORMANCE"]" -Scope Session
+    Set-Variable -Name "IsDebugEnabled" -Value "${LoggingProperties}"."ENABLE_DEBUG" -Scope Session
+    Set-Variable -Name "IsVerboseEnabled" -Value "${LoggingProperties}"."ENABLE_VERBOSE" -Scope Session
+    Set-Variable -Name "IsTraceEnabled" -Value "${LoggingProperties}"."ENABLE_TRACE" -Scope Session
+    Set-Variable -Name "IsPerfEnabled" -Value "${LoggingProperties}"."ENABLE_PERFORMANCE" -Scope Session
 }
 
 Function writeLogEntry() {
@@ -77,21 +77,20 @@ Function writeLogEntryToFile() {
         [string] $LogMessage
     )
 
-    Switch -Regex (${LogLevel}) {
-        "[Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp][Ee][Rr][Ff]" { $LogFile = "${LoggingProperties}["PERF_LOG_FILE"]" }
-        "[Ff][Aa][Tt][Aa][Ll]" { $LogFile = "${LoggingProperties}["ERROR_LOG_FILE"]" }
-        "[Ee][Rr][Rr][Oo][Rr]" { $LogFile = "${LoggingProperties}["ERROR_LOG_FILE"]" }
-        "[Ww][Aa][Rr][Nn]" { $LogFile "${LoggingProperties}["WARN_LOG_FILE"]" }
-        "[Ii][Nn][Ff][Oo]" { $LogFile = "${LoggingProperties}["INFO_LOG_FILE"]" }
-        "[Aa][Uu][Dd][Ii][Tt]" { $LogFile =" ${LoggingProperties}["AUDIT_LOG_FILE"]" }
-        "[Dd][Ee][Bb][Uu][Gg]" { $LogFile = "${LoggingProperties}["DEBUG_LOG_FILE"]" }
-        "[Mm][Oo][Nn][Ii][Tt][Oo][Rr]" { $LogFile = "${LoggingProperties}["MONITOR_LOG_FILE"]" }
-        default { $LogFile = "${LoggingProperties}["DEFAULT_LOG_FILE"]" }
+    Switch -Regex ("${LogLevel}") {
+        "[Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp][Ee][Rr][Ff]" { $LogFile = "${LoggingProperties}"."PERF_LOG_FILE" }
+        "[Ff][Aa][Tt][Aa][Ll]" { $LogFile = "${LoggingProperties}"."ERROR_LOG_FILE" }
+        "[Ee][Rr][Rr][Oo][Rr]" { $LogFile = "${LoggingProperties}"."ERROR_LOG_FILE" }
+        "[Ww][Aa][Rr][Nn]" { $LogFile = "${LoggingProperties}"."WARN_LOG_FILE" }
+        "[Ii][Nn][Ff][Oo]" { $LogFile = "${LoggingProperties}"."INFO_LOG_FILE" }
+        "[Aa][Uu][Dd][Ii][Tt]" { $LogFile =" ${LoggingProperties}"."AUDIT_LOG_FILE" }
+        "[Dd][Ee][Bb][Uu][Gg]" { $LogFile = "${LoggingProperties}"."DEBUG_LOG_FILE" }
+        "[Mm][Oo][Nn][Ii][Tt][Oo][Rr]" { $LogFile = "${LoggingProperties}"."MONITOR_LOG_FILE" }
+        default { $LogFile = "${LoggingProperties}"."DEFAULT_LOG_FILE" }
     }
 
-    $LogEntry = [string]::Format("${LoggingProperties}["CONVERSION_PATTERN"]", "$(Get-Date -Format "${LoggingProperties}["TIMESTAMP_OPTS"]")", `
-        "${LogFile}", ${LogLevel}", "${ProcessID}", `
-        "${ClassName}", "${LineNumber}", "${FunctionName}", "${LogMessage}")
+    $LogEntry = [string]::Format("${LoggingProperties}"."CONVERSION_PATTERN",
+        "$(Get-Date -Format "${LoggingProperties}"."TIMESTAMP_OPTS")", "${LogFile}", "${LogLevel}", "${ProcessID}", "${ClassName}", "${LineNumber}", "${FunctionName}", "${LogMessage}")
 
     Add-Content -Path "${LogRoot}/${LogFile}" -Value "${LogEntry}"
 }
