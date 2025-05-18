@@ -18,14 +18,11 @@ Import-Module -Name Microsoft.WinGet.CommandNotFound
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
         $LoadPropertyHandler = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/LoadPropertyFile.ps1"
+        $Logger = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/logger.ps1"
 
         if (Test-Path -Path "${LoadPropertyHandler}" -PathType Leaf) {
             . "${LoadPropertyHandler}"
         }
-    }
-
-    if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
-        $Logger = "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib/system/logger.ps1"
 
         if (Test-Path -Path "${Logger}" -PathType Leaf) {
             . "${Logger}"
