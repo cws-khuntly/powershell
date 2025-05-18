@@ -19,14 +19,14 @@
 #>
 
 Function Install-Lenovo-LSB() {
-    $TempExe = New-TemporaryFile
+    $InstallFile = New-TemporaryFile
 
-    Invoke-WebRequest -Uri "https://download.lenovo.com/lsbv4/LSBSetup.exe" -OutFile $TempExe
+    Invoke-WebRequest -Uri "https://download.lenovo.com/lsbv4/LSBSetup.exe" -OutFile $InstallFile
 
-    Start-Process -Wait -FilePath $TempExe -ArgumentList "/S" -PassThru
+    Start-Process -Wait -FilePath $InstallFile -ArgumentList "/S" -PassThru
     $ExitCode = $LastReturnCode
 
-    if (Test-Path -Path $TempExe -PathType Leaf) { Remove-Item -Path $TempExe -Force }
+    if (Test-Path -Path $InstallFile -PathType Leaf) { Remove-Item -Path $InstallFile -Force }
 
     return $ExitCode
 }
