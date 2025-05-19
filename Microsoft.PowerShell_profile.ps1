@@ -11,9 +11,37 @@ if (Test-Path($ChocolateyProfile)) {
     Import-Module "$ChocolateyProfile"
 }
 
-#f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
+#
+# sysinternals module
+#
+Install-Module -Name SysInternals
+Import-Module -Name SysInternals
+
+#
+# VMware PowerCLI
+#
+Install-Module -Name VMware.PowerCLI
+Import-Module -Name VMware.PowerCLI
+
+#
+# OpenSSL
+#
+Install-Module -Name OpenSSL
+Import-Module -Name OpenSSL
+
+#
+# windows update
+#
+Install-Module -Name PSWindowsUpdate
+Import-Module -Name PSWindowsUpdate
+
+#
+# winget
+#
+Install-Module -Name Microsoft.WinGet.Client
+Install-Module -Name Microsoft.WinGet.CommandNotFound
+Import-Module -Name Microsoft.WinGet.Client
 Import-Module -Name Microsoft.WinGet.CommandNotFound
-#f45873b3-b655-43a6-b217-97c00aa0db58
 
 if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/" -PathType Container) {
     if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/PowerShell/lib" -PathType Container) {
