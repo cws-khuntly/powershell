@@ -12,7 +12,7 @@ Function Get-Properties() {
 
             $PropertyObject = [PSCustomObject]@{
                 Name = $FileEntryKey.Trim()
-                Value = $FileEntryValue.Trim()
+                Value = $ExecutionContext.InvokeCommand.ExpandString($($FileEntryValue -Replace "`"", "").Trim())
             }
 
 			$ReturnedProperties += $PropertyObject
