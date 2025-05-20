@@ -1,3 +1,4 @@
+<#
 #==============================================================================
 #
 #          FILE:  install.ps1
@@ -15,10 +16,15 @@
 #      REVISION:  ---
 #
 #==============================================================================
+#>
 
-SysInternals
-VMware.PowerCLI
-OpenSSL
-PSWindowsUpdate
-Microsoft.WinGet.Client
-Microsoft.WinGet.CommandNotFound
+Function Connect-Via-OpenSSL() {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string] $TargetHost,
+        [int] $TargetPort = 443
+    )
+
+	Write-Output "openssl s_client -status -connect ${TargetHost}:${TargetPort}"
+	openssl s_client -status -connect "${TargetHost}":"${TargetPort}"
+}

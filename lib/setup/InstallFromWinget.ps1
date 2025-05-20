@@ -18,12 +18,12 @@
 #==============================================================================
 #>
 
-Function Install-UpNote() { winget install -e -i --id $(winget search UpNote --source=msstore) --source=msstore }
+Function Install-UpNote() { Install-WinGetPackage -Id "UpNotePte.Ltd.UpNote" -Name "UpNote"; return $LastExitCode }
 
-Function Install-WhatsApp() { winget install -e -i --id $(winget search WhatsApp --source=msstore) --source=msstore }
+Function Install-WhatsApp() { Install-WinGetPackage -Id "9NKSQGP7F2NH" -Name "WhatsApp"; return $LastExitCode }
 
-Function Install-SysInternala() { winget install -e -i --id $(winget search SysInternals --source=msstore) --source=msstore }
+Function Install-SysInternals() { Install-WinGetPackage -Id "Microsoft.Sysinternals" -Name "Sysinternals Suite"; return $LastExitCode }
 
-Function Install-VSCode() { winget install -e -i --id $(winget search vscode --source=msstore) --source=msstore }
+Function Install-VSCode() { Install-WinGetPackage -Id "Microsoft.VisualStudioCode" -Name "Microsoft Visual Studio Code"; return $LastExitCode }
 
-Function Install-Acrobat() { winget install -e -i --id $(winget search "Adobe Acrobat Reader DC" --source=msstore) --source=msstore }
+Function Install-Acrobat() { Install-WinGetPackage -Id "Adobe.Acrobat.Reader.64-bit" -Name "Adobe Acrobat Reader (64-bit)"; return $LastExitCode }

@@ -36,13 +36,13 @@ Function Install-Chocolatey {
 
         Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass', '-File', '${InstallFile}'
         $ExitCode = ${LastExitCode}
+
+        if (Test-Path -Path "${InstallFile}" -PathType Leaf) { Remove-Item -Path "${InstallFile}" -Force }
     } else {
         $ExitCode = 1
 
         Write-Error -Message "Unable to create temporary file"
     }
-
-    Remove-Item -Path "${InstallFile}" -Force
 
     return ${ExitCode}
 }

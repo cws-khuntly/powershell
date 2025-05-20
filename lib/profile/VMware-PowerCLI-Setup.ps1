@@ -1,3 +1,4 @@
+<#
 #==============================================================================
 #
 #          FILE:  install.ps1
@@ -15,10 +16,6 @@
 #      REVISION:  ---
 #
 #==============================================================================
+#>
 
-SysInternals
-VMware.PowerCLI
-OpenSSL
-PSWindowsUpdate
-Microsoft.WinGet.Client
-Microsoft.WinGet.CommandNotFound
+Set-PowerCLIConfiguration -Scope User -ParticipateInCEIP $true
