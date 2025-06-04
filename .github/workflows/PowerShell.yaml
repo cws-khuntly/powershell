@@ -14,11 +14,6 @@ jobs:
           persist-credentials: false
           submodules: false
       - name: PowerShell Analyzer
-        uses: microsoft/psscriptanalyzer-action@v1.0
-        with:
-          path: ./
-          includeDefaultRules: true
-          severity: '"Error", "Warning"'
-          recurse: true
-          enableExit: true
-        if: ${{ success() }}
+        shell: pwsh
+        run: |
+          Invoke-ScriptAnalyzer -Path ./ -Recurse -Severity Error -EnableExit
