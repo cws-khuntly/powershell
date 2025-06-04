@@ -19,7 +19,7 @@
 #>
 
 Function Build-New-System() {
-    Write-Output "Installing WSL with Fedora 42: $(wsl --install -d FedoraLinux-42; wsl --export FedoraLinux-42 C:\Temp\FedoraLinux-42.tar; wsl --unregister FedoraLinux-42; wsl --import FedoraLinux-42 C:\Temp\FedoraLinux-42.tar D:\WSL\FedoraLinux-42; Remove-Item -Path C:\Temp\FedoraLinux-42.tar)"
+    Write-Output "Installing WSL woth Fedora 42: $(Install-WSL; Write-Output "Return code: $LastExitCode")"
 
     Write-Output "Installing Chocolatey: $(Install-Chocolatey; Write-Output "Return code: $LastExitCode")"
 
