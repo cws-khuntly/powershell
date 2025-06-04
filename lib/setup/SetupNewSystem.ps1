@@ -19,16 +19,25 @@
 #>
 
 Function Build-New-System() {
+    Write-Output "Installing WSL with Fedora 42: $(wsl --install -d Fedora-42; wsl --export Fedora-42 C:\Temp\Fedora-42.tar; wsl --unregister Fedora-42; wsl --import Fedora-42 C:\Temp\Fedora-42.tar D:\WSL\Fedora-42; Remove-Item -Path C:\Temp\Fedora-42.tar)"
+
     Write-Output "Installing Chocolatey: $(Install-Chocolatey; Write-Output "Return code: $LastExitCode")"
+
     Write-Output "Installing Chocolatey Applications: $(Install-From-Chocolatey; Write-Output "Return code: $LastExitCode")"
 
     Write-Output "Installing Applications from internet..."
+
     Write-Output "Installing Lenovo Service Bridge: $(Install-Lenovo-LSB; Write-Output "Return code: $LastExitCode")"
 
     Write-Output "Installing Applications from WinGet..."
+
     Write-Output "Installing UpNote: $(Install-UpNote; Write-Output "Return code: $LastExitCode")"
+
     Write-Output "Installing WhatsApp: $(Install-WhatsApp; Write-Output "Return code: $LastExitCode")"
+
     Write-Output "Installing SysInternals: $(Install-SysInternals; Write-Output "Return code: $LastExitCode")"
+
     Write-Output "Installing Visual Studio Code: $(Install-VSCode; Write-Output "Return code: $LastExitCode")"
+
     Write-Output "Installing Acrobat Reader: $(Install-Acrobat; Write-Output "Return code: $LastExitCode")"
 }
