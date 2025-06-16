@@ -73,7 +73,7 @@ $LoadModulesList = "$([Environment]::GetFolderPath("Personal"))/PowerShell/confi
 
 if (Test-Path -Path "${LoadModulesList}" -PathType Leaf) {
     Get-Content -Path "${LoadModulesList}" | ForEach-Object {
-        if (!($_ -Match "#")) {
+        if (-not ([string]::IsNullOrEmpty($_)) -and -not ($_ -Match "#")) {
             $ModuleName = $_
 
 			if (!([string]::IsNullOrEmpty("${LoggingLoaded}")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}"))) -and ("${isDebugEnabled}" -Match "true")) {
