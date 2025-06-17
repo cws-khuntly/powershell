@@ -25,19 +25,11 @@ Function Get-Properties() {
     )
 
     $ReturnedProperties = @()
+    $FileContent = Get-Content "$InputFile" -Raw | ConvertFrom-StringData
 
-    Get-Content "$InputFile" | Select-String -NotMatch "^#|^$|^;" | Select-String "=" | ForEach-Object {
-        if (!([string]::IsNullOrWhiteSpace(${_}))) {
-            $FileEntryKey, $FileEntryValue = $_ -Split "=", 2
-
-            $PropertyObject = [PSCustomObject]@{
-                Name = $FileEntryKey.Trim()
-                Value = $ExecutionContext.InvokeCommand.ExpandString($($FileEntryValue -Replace "`"", "").Trim())
-            }
-
-			$ReturnedProperties += $PropertyObject
-        }
+    $ReturnedProperties = ForEach ($LineItem in $FileContent) {
+        $LineItem = [System.Environment]::ExpandEnvironmentVariables($LineItem)
     }
 
-	return $ReturnedProperties
+    return $ReturnedProperties
 }

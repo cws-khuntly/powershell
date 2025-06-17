@@ -19,11 +19,11 @@
 #>
 
 function Install-From-Chocolatey() {
-    if (Test-Path -Path "$([Environment]::GetFolderPath("ProgramData"))/chocolatey/choco.exe" -PathType Leaf) {
-        if (Test-Path -Path "$([Environment]::GetFolderPath("Personal"))/Documents/Chocolatey/packages.config" -Type Leaf) {
+    if (Test-Path -Path "$([Environment]::GetFolderPath('ProgramData'))/chocolatey/choco.exe" -PathType Leaf) {
+        if (Test-Path -Path "$([Environment]::GetFolderPath('Personal'))/Documents/Chocolatey/packages.config" -Type Leaf) {
             $ProcessParams = @{
-                 FilePath = "$([Environment]::GetFolderPath("ProgramData"))/chocolatey/choco.exe"
-                 ArgumentList = "install $([Environment]::GetFolderPath("Personal"))/Documents/Chocolatey/packages.config --virus -y"
+                 FilePath = "$([Environment]::GetFolderPath('ProgramData'))/chocolatey/choco.exe"
+                 ArgumentList = "install $([Environment]::GetFolderPath('Personal'))/Documents/Chocolatey/packages.config --virus -y"
             }
 
             Start-Process ${ProcessParams} -Wait

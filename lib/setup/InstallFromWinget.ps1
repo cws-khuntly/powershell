@@ -26,6 +26,6 @@ Function Install-SysInternals() { Install-WinGetPackage -Id "Microsoft.Sysintern
 
 Function Install-VSCode() { Install-WinGetPackage -Id "Microsoft.VisualStudioCode" -Name "Microsoft Visual Studio Code"; return $LastExitCode }
 
-Function Install-VSCode-Extensions { Start-Process -Wait -FilePath "$([Environment]::GetFolderPath("ProgramFiles"))/Microsoft VS Code/code.exe" -ArgumentList "--install-extension vscode-modules.setup" -PassThru; return $LastExitCode }
+Function Install-VSCode-Extensions { Start-Process -Wait -FilePath "$([Environment]::GetFolderPath('ProgramFiles'))/Microsoft VS Code/code.exe" -ArgumentList "--install-extension vscode-modules.setup" -PassThru; return $LastExitCode }
 
 Function Install-Acrobat() { Install-WinGetPackage -Id "Adobe.Acrobat.Reader.64-bit" -Name "Adobe Acrobat Reader (64-bit)"; return $LastExitCode }

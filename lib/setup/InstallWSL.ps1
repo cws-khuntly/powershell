@@ -21,15 +21,19 @@
 Function Install-WSL() {
     Write-Output "Installing WSL with Fedora 42..."
 
+    New-Item -ItemType Directory -Path "$([Environment]::GetFolderPath('TEMP'))"
+    New-Item -ItemType Directory -Path "D:/WSL"
+    Copy-Item -Path "$([Environment]::GetFolderPath('Personal'))/wslconfig" -Destination "$([Environment]::GetFolderPath('UserProfile'))/.wslconfig"
+
     wsl --install
     wsl --shutdown
-    Copy-Item -Path $([Environment]::GetFolderPath("Personal"))/wslconfig -Destination $([Environment]::GetFolderPath("UserProfile"))/.wslconfig
     wsl --install -d FedoraLinux-42
     wsl --shutdown
-    wsl --export FedoraLinux-42 C:\Temp\FedoraLinux-42.tar
+    wsl --export FedoraLinux-42 "$([Environment]::GetFolderPath('TEMP'))/FedoraLinux-42.tar"
     wsl --unregister FedoraLinux-42
-    wsl --import FedoraLinux-42 C:\Temp\FedoraLinux-42.tar D:\WSL\FedoraLinux-42;
-    Remove-Item -Path C:\Temp\FedoraLinux-42.tar
+    wsl --import FedoraLinux-42 "$([Environment]::GetFolderPath('TEMP'))/FedoraLinux-42.tar" "D:\WSL\FedoraLinux-42"
+
+    Remove-Item -Path "$([Environment]::GetFolderPath('TEMP'))/FedoraLinux-42.tar"
 
     Write-Output "Installation complete"
 }

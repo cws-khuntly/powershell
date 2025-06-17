@@ -24,7 +24,7 @@ $PSReadLineOptions = @{
     EditMode = 'Windows'
     HistoryNoDuplicates = $true
     HistorySearchCursorMovesToEnd = $true
-    HistorySavePath = "$([Environment]::GetFolderPath("Personal"))/PowerShell/.ps_history"
+    HistorySavePath = "$([Environment]::GetFolderPath('Personal'))/PowerShell/.ps_history"
     HistorySaveStyle = 'SaveIncrementally'
     Colors = @{
         Command = '#87CEEB'  # SkyBlue (pastel)
@@ -43,6 +43,7 @@ $PSReadLineOptions = @{
     BellStyle = 'None'
     MaximumHistoryCount = '10000'
 }
+
 Set-PSReadLineOption @PSReadLineOptions -AddToHistoryHandler {
     param($line)
     $sensitive = @('password', 'secret', 'token', 'apikey', 'connectionstring')
@@ -76,4 +77,5 @@ $scriptblock = {
         }
     }
 }
+
 Register-ArgumentCompleter -Native -CommandName git -ScriptBlock $scriptblock

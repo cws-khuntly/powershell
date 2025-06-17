@@ -18,4 +18,4 @@
 #==============================================================================
 #>
 
-${env:Path} += ";$([Environment]::GetFolderPath("ProgramFiles"))/git/bin"
+${env:Path} += ";$([Environment]::GetFolderPath('ProgramFiles'))/git/bin"
