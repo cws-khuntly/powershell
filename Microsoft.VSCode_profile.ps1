@@ -20,13 +20,6 @@
 
 $PSDefaultParameterValues["Out-File:Encoding"] = "utf8"
 
-$SystemLibsPath = "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/system"
-$ProfileLibsPath = "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/profile"
-$SystemConfigPath = "$([Environment]::GetFolderPath('Personal'))/PowerShell/config/system"
-$ProfileConfigPath = "$([Environment]::GetFolderPath('Personal'))/PowerShell/config/profile"
-$LoggingProperties = "$SystemConfigPath/logging.properties"
-$LoadModulesList = "$ProfileConfigPath/LoadModules.properties"
-
 #
 # Chocolatey profile
 #
@@ -34,6 +27,8 @@ $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
     Import-Module "$ChocolateyProfile"
 }
+
+$LoggingProperties = "$([Environment]::GetFolderPath('Personal'))/PowerShell/config/system/logging.properties"
 
 if (Test-Path -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib" -PathType Container) {
     $LoadPropertyHandler = "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/system/LoadPropertyFile.ps1"
@@ -48,9 +43,9 @@ if (Test-Path -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib"
     }
 }
 
-if (Test-Path -Path "$SystemLibsPath" -PathType Container) { $SourceFiles = Get-ChildItem -Path "$SystemLibsPath/*" -Include "*.ps1" }
-if (Test-Path -Path "$ProfileLibsPath" -PathType Container) { $SourceFiles += Get-ChildItem -Path "$ProfileLibsPath/*" -Include "*.ps1" }
-
+if (Test-Path -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/system" -PathType Container) { $SourceFiles = Get-ChildItem -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/system" -Include *.ps1 }
+if (Test-Path -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/profile" -PathType Container) { $SourceFiles += Get-ChildItem -Path "$([Environment]::GetFolderPath('Personal'))/PowerShell/lib/profile" -Include *.ps1 }
+Write-Output $SourceFiles
 if (!([string]::IsNullOrEmpty("$LoggingLoaded")) -and (!([string]::IsNullOrEmpty("$IsDebugEnabled"))) -and ("$IsDebugEnabled" -Match "true")) {
     writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "SourceFiles -> $SourceFiles";
 }
@@ -73,6 +68,8 @@ if (!([string]::IsNullOrEmpty("$SourceFiles"))) {
     }
 }
 
+$LoadModulesList = "$([Environment]::GetFolderPath('Personal'))/PowerShell/config/profile/LoadModules.properties"
+
 if (!([string]::IsNullOrEmpty("$LoggingLoaded")) -and (!([string]::IsNullOrEmpty("$IsDebugEnabled"))) -and ("$IsDebugEnabled" -Match "true")) {
     writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "LoadModulesList -> $LoadModulesList";
 }
@@ -89,7 +86,7 @@ if (Test-Path -Path "$LoadModulesList" -PathType Leaf) {
 			#
 			# check if the module is installed
 			#
-			$ModuleIsInstalled = Get-Module -ListAvailable -Verbose:$false | Where-Object { $_.Name -eq $ModuleName }
+			$ModuleIsInstalled = Get-Module -ListAvailable -Verbose:$IsVerboseEnabled | Where-Object { $_.Name -eq $ModuleName }
 
 			if (!([string]::IsNullOrEmpty("$LoggingLoaded")) -and (!([string]::IsNullOrEmpty("${IsDebugEnabled}"))) -and ("${isDebugEnabled}" -Match "true")) {
 				writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "ModuleIsInstalled -> $ModuleIsInstalled";
@@ -101,7 +98,7 @@ if (Test-Path -Path "$LoadModulesList" -PathType Leaf) {
 					writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "EXEC: Install-Module -Name $ModuleName -Scope CurrentUser -Force -AllowClobber";
 				}
 
-				Install-Module -Name "$ModuleName" -Scope CurrentUser -Force -AllowClobber
+				Install-Module -Name "$ModuleName" -Scope CurrentUser -Force -AllowClobber -Verbose:$IsVerboseEnabled
 				$ExitCode = $LastExitCode
 
 				if ($ExitCode -ne 0) {
@@ -115,7 +112,7 @@ if (Test-Path -Path "$LoadModulesList" -PathType Leaf) {
 						writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "EXEC: Install-Module -Name $ModuleName -Scope CurrentUser -Force -AllowClobber";
 					}
 
-					Import-Module -Name "$ModuleName" -Scope Global -Verbose:$false
+					Import-Module -Name "$ModuleName" -Scope Global -Verbose:$IsVerboseEnabled
 					$ExitCode = $LastExitCode
 
 					if ($ExitCode -ne 0) {
@@ -131,7 +128,7 @@ if (Test-Path -Path "$LoadModulesList" -PathType Leaf) {
 					writeLogEntry "FILE" "DEBUG" "$([System.Diagnostics.Process]::GetCurrentProcess().Id)" "$(Split-Path $MyInvocation.PSCommandPath -Leaf)" "$MyInvocation.ScriptLineNumber" "ProfileLoad" "EXEC: Install-Module -Name $ModuleName -Scope CurrentUser -Force -AllowClobber";
 				}
 
-				Import-Module -Name "$ModuleName" -Scope Global -Verbose:$false
+				Import-Module -Name "$ModuleName" -Scope Global -Verbose:$IsVerboseEnabled
 				$ExitCode = $LastExitCode
 
 				if ($ExitCode -ne 0) {
