@@ -17,8 +17,11 @@
 #
 #==============================================================================
 #>
-
+Write-Output "LoggingProperties: $LoggingProperties"
 if (Test-Path -Path "$LoggingProperties" -Type Leaf) {
+    Write-Output "in logger"
+    if (Test-Path Variable:LogConfiguration) { Remove-Variable -Name LogConfiguration }
+
     $LogConfiguration = Get-Properties "$LoggingProperties"
 
     if (($null -eq $LogConfiguration) -or ($LogConfiguration.Count -eq 0)) {
@@ -35,12 +38,18 @@ if (Test-Path -Path "$LoggingProperties" -Type Leaf) {
 }
 
 Function setLoggingSession() {
-    Set-Variable -Name "LoggingLoaded" -Value $true -Scope Global
+    if (Test-Path Variable:LoggingLoaded) { Remove-Variable -Name LoggingLoaded -Scope Global }
+    if (Test-Path Variable:IsDebugEnabled) { Remove-Variable -Name IsDebugEnabled -Scope Global }
+    if (Test-Path Variable:IsVerboseEnabled) { Remove-Variable -Name IsVerboseEnabled -Scope Global }
+    if (Test-Path Variable:IsTraceEnabled) { Remove-Variable -Name IsTraceEnabled -Scope Global }
+    if (Test-Path Variable:IsPerfEnabled) { Remove-Variable -Name IsPerfEnabled -Scope Global }
 
-    Set-Variable -Name "IsDebugEnabled" -Value $LogConfiguration['ENABLE_DEBUG'] -Scope Session
-    Set-Variable -Name "IsVerboseEnabled" -Value $LogConfiguration['ENABLE_VERBOSE'] -Scope Session
-    Set-Variable -Name "IsTraceEnabled" -Value $LogConfiguration['ENABLE_TRACE'] -Scope Session
-    Set-Variable -Name "IsPerfEnabled" -Value $LogConfiguration['ENABLE_PERFORMANCE'] -Scope Session
+    Set-Variable -Name "IsDebugEnabled" -Value $LogConfiguration['ENABLE_DEBUG'] -Scope Global
+    Set-Variable -Name "IsVerboseEnabled" -Value $LogConfiguration['ENABLE_VERBOSE'] -Scope Global
+    Set-Variable -Name "IsTraceEnabled" -Value $LogConfiguration['ENABLE_TRACE'] -Scope Global
+    Set-Variable -Name "IsPerfEnabled" -Value $LogConfiguration['ENABLE_PERFORMANCE'] -Scope Global
+
+    Set-Variable -Name "LoggingLoaded" -Value $true -Scope Global
 }
 
 Function writeLogEntry() {
@@ -94,6 +103,9 @@ Function writeLogEntryToFile() {
         [Parameter(Mandatory=$true)]
         [string] $LogMessage
     )
+
+    if (Test-Path Variable:LogFile) { Remove-Variable -Name LogFile }
+    if (Test-Path Variable:LogEntry) { Remove-Variable -Name LogEntry }
 
     Switch -Regex ("${LogLevel}") {
         "[Pp][Ee][Rr][Ff][Oo][Rr][Mm][Aa][Nn][Cc][Ee]|[Pp][Ee][Rr][Ff]" { $LogFile = $LogConfiguration['PERF_LOG_FILE'] }

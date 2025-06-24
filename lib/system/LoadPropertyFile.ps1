@@ -23,13 +23,18 @@ Function Get-Properties() {
         [Parameter(Mandatory=$true)]
         [string] $InputFile
     )
+    Write-Output "InputFile: $InputFile"
+    if (Test-Path Variable:ReturnedProperties) { Remove-Variable -Name ReturnedProperties }
+    if (Test-Path Variable:PropertyTemplate) { Remove-Variable -Name PropertyTemplate }
+    if (Test-Path Variable:FileContent) { Remove-Variable -Name FileContent }
+    if (Test-Path Variable:LineItem) { Remove-Variable -Name LineItem }
 
     $ReturnedProperties = @()
-    $FileContent = Get-Content "$InputFile" -Raw | ConvertFrom-StringData
-
-    $ReturnedProperties = ForEach ($LineItem in $FileContent) {
-        $LineItem = [System.Environment]::ExpandEnvironmentVariables($LineItem)
-    }
+    $PropertyTemplate = Get-Content "$InputFile" -Raw | ConvertFrom-StringData
+    Write-Output "PropertyTemplate: $PropertyTemplate"
+    $ReplaceText = $PropertyTemplate -Replace "`"", ""
+    Write-Output "ReplaceText: $ReplaceText"
+    $ReturnedProperties = [System.Environment]::ExpandEnvironmentVariables($ReplaceText)
 
     return $ReturnedProperties
 }
